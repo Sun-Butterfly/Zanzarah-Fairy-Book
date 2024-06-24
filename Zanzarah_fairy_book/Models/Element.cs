@@ -1,4 +1,4 @@
-namespace Zanzarah_fairy_book;
+namespace Zanzarah_fairy_book.Models;
 
 public enum Element
 {
