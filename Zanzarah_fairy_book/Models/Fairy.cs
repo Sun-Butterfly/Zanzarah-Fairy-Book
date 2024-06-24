@@ -13,6 +13,6 @@ public class Fairy
     public int EvolveLevel { get; set; }
     
     public int? EvolveFormId { get; set; }
-    public Fairy? EvolveForm { get; set; }
+    
 
 }
