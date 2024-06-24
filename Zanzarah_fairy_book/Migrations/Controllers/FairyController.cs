@@ -5,38 +5,43 @@ namespace Zanzarah_fairy_book.Migrations.Controllers;
 [Route("[controller]/[action]")]
 public class FairyController : Controller
 {
-    public DataBaseContext db;
-    
+    DataBaseContext _db;
+
+    public FairyController(DataBaseContext db)
+    {
+        _db = db;
+    }
+
     [HttpGet]
     public IActionResult GetById(int id)
     {
-        var fairy = db.Fairies
+        var fairy = _db.Fairies
             .FirstOrDefault(x => x.Id == id);
-        return Ok();
+        return Ok(fairy);
     }
 
     [HttpPost]
     public IActionResult AddFairy(Fairy fairy)
     {
-        db.Fairies.Add(fairy);
-        db.SaveChanges();
+        _db.Fairies.Add(fairy);
+        _db.SaveChanges();
         return Ok();
     }
 
     [HttpPost]
     public IActionResult UpdateFairy(Fairy fairy)
     {
-        db.Fairies.Update(fairy);
-        db.SaveChanges();
+        _db.Fairies.Update(fairy);
+        _db.SaveChanges();
         return Ok();
     }
 
     [HttpPost]
     public IActionResult DeleteFairy(int id)
     {
-        var fairy = db.Fairies.FirstOrDefault(x => x.Id == id);
-        db.Remove(fairy);
-        db.SaveChanges();
+        var fairy = _db.Fairies.FirstOrDefault(x => x.Id == id);
+        _db.Remove(fairy);
+        _db.SaveChanges();
         return Ok();
     }
 }

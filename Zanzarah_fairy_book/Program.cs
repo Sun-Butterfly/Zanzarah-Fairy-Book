@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
 using Zanzarah_fairy_book;
 
@@ -5,7 +6,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("appsettings.json");
 builder.Services.AddDbContext<DataBaseContext>();
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(opts =>
+{
+    var enumConverter = new JsonStringEnumConverter();
+    opts.JsonSerializerOptions.Converters.Add(enumConverter);
+    opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 builder.Services.AddControllersWithViews();
 builder.Services.AddSwaggerGen(x => x.SwaggerDoc("v1", new OpenApiInfo()
 {
