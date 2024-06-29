@@ -9,8 +9,9 @@ public class Fairy
     public int Dexterity { get; set; }
     public int JumpAbility { get; set; }
     public int Special { get; set; }
-    public bool CanEvolve { get; set; }
+    public EvolveKind EvolveKind { get; set; }
     public int EvolveLevel { get; set; }
+    public EvolveItem EvolveItem { get; set; }
     
     public int? EvolveFormId { get; set; }
     

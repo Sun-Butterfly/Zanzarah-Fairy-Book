@@ -36,7 +36,7 @@ public class FairyController : Controller
         return Ok();
     }
 
-    [HttpPost]
+    [HttpDelete]
     public IActionResult DeleteFairy(int id)
     {
         var fairy = _db.Fairies.FirstOrDefault(x => x.Id == id);
