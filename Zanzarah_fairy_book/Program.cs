@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
 using Zanzarah_fairy_book;
+using Zanzarah_fairy_book.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,9 @@ builder.Services.AddSwaggerGen(x => x.SwaggerDoc("v1", new OpenApiInfo()
     Version = "1.0"
 }));
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddScoped<FairyService>();
+
 var app = builder.Build();
 
 app.UseSwagger();

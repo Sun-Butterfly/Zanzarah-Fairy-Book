@@ -12,8 +12,9 @@ public class Fairy
     public EvolveKind EvolveKind { get; set; }
     public int EvolveLevel { get; set; }
     public EvolveItem EvolveItem { get; set; }
-    
-    public int? EvolveFormId { get; set; }
-    
+
+    public List<EvolveForm>? EvolveToForms { get; set; } = new();
+    public List<EvolveForm>? EvolveFromForms { get; set; } = new();
+
 
 }
