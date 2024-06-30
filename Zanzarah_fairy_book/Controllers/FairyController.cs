@@ -50,18 +50,19 @@ public class FairyController : Controller
     }
 
     [HttpPost]
-    public IActionResult UpdateEvolveForm(Fairy fairy, EvolveForm evolveForm)
+    public IActionResult UpdateEvolveForm(int evolveFromFormId, int evolveToFormId)
     {
-        if (!_service.CanEvolveByLevel(fairy) || !_service.CanEvolveByItem(fairy))
+        var fairyFrom = _service.GetById(evolveFromFormId);
+        var fairyTo = _service.GetById(evolveToFormId);
+        if (!_service.CanEvolve(fairyFrom))
         {
             return BadRequest("Фея не может эволюционировать!");
         }
-        //TODO:
-        // if (_service.CanEvolveByLevel(fairy) && !_service.IsCorrectEvolve_ByLevel_Element(fairy, evolveForm))
-        // {
-        //     return BadRequest("Фея не может эволюционировать в другую стихию");
-        // }
-        _service.UpdateEvolve(fairy,evolveForm);
+        if (_service.CanEvolveByLevel(fairyFrom) && !_service.IsCorrectEvolve_ByLevel_Element(fairyFrom, fairyTo))
+        {
+            return BadRequest("Фея не может эволюционировать в другую стихию");
+        }
+        _service.UpdateEvolve(evolveFromFormId,evolveToFormId);
         return Ok();
     }
 
@@ -72,13 +73,11 @@ public class FairyController : Controller
         return Ok();
     }
 
-    //TODO:
-    // [HttpDelete]
-    // public IActionResult DeleteFairy(int id)
-    // {
-    //     var fairy = _db.Fairies.FirstOrDefault(x => x.Id == id);
-    //     _db.Remove(fairy);
-    //     _db.SaveChanges();
-    //     return Ok();
-    // }
+    
+    [HttpDelete]
+    public IActionResult DeleteFairy(int id)
+    {
+        _service.Delete(id);
+        return Ok();
+    }
 }

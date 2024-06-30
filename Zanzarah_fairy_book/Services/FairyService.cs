@@ -18,7 +18,7 @@ public class FairyService
 
         return fairy;
     }
-    
+
     public Fairy? GetByName(string name)
     {
         var fairy = _db.Fairies
@@ -32,16 +32,20 @@ public class FairyService
         _db.Fairies.Add(fairy);
         _db.SaveChanges();
     }
-    
+
     public void Update(Fairy fairy)
     {
         _db.Fairies.Update(fairy);
         _db.SaveChanges();
     }
-    public void UpdateEvolve(Fairy fairy, EvolveForm evolveForm)
+
+    public void UpdateEvolve(int fairyFromId, int fairyToId)
     {
-        _db.Fairies.Update(fairy);
-        _db.EvolveForms?.Update(evolveForm);
+        _db.EvolveForms.Add(new EvolveForm()
+        {
+            FromId = fairyFromId,
+            ToId = fairyToId
+        });
         _db.SaveChanges();
     }
 
@@ -63,7 +67,7 @@ public class FairyService
 
         return true;
     }
-    
+
     public bool ExistsByName(string name)
     {
         var fairy = _db.Fairies
@@ -76,33 +80,50 @@ public class FairyService
         return true;
     }
 
-    public bool CanEvolveByLevel(Fairy fairy)
+    public bool CanEvolve(Fairy fairy)
     {
-        if (fairy.EvolveKind == EvolveKind.None || fairy.EvolveKind == EvolveKind.EvolveFromItem)
+        if (fairy.EvolveKind == EvolveKind.None)
         {
             return false;
         }
+
         return true;
     }
-    
-    public bool CanEvolveByItem(Fairy fairy)
+    public bool CanEvolveByLevel(Fairy fairy)
     {
-        if (fairy.EvolveKind == EvolveKind.None || fairy.EvolveKind == EvolveKind.EvolveFromLevel)
+        if (CanEvolve(fairy) && fairy.EvolveKind == EvolveKind.EvolveFromItem)
         {
             return false;
         }
+
         return true;
     }
 
-    
-    public bool IsCorrectEvolve_ByLevel_Element(Fairy fairy)
+    public bool CanEvolveByItem(Fairy fairy)
     {
-        // if (fairy.Element != evolveForm.Element)
-        // {
-        //     return false;
-        // }
-        // TODO: 
+        if (CanEvolve(fairy) && fairy.EvolveKind == EvolveKind.EvolveFromLevel)
+        {
+            return false;
+        }
+
         return true;
     }
-    
+
+
+    public bool IsCorrectEvolve_ByLevel_Element(Fairy fairy1, Fairy fairy2)
+    {
+        if (fairy1.Element != fairy2.Element)
+        {
+            return false;
+        }
+        return true;
+    }
+    // public bool IsCorrectEvolve_ByItem_Element(Fairy fairy1, Fairy fairy2)
+    // {
+    //     if (fairy1.Element != fairy2.Element)
+    //     {
+    //         return false;
+    //     }
+    //     return true;
+    // } //TODO:
 }
