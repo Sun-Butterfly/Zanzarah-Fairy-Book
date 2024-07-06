@@ -9,10 +9,9 @@ public class Fairy
     public int Dexterity { get; set; }
     public int JumpAbility { get; set; }
     public int Special { get; set; }
-    public EvolveKind EvolveKind { get; set; }
-    public int EvolveLevel { get; set; }
-    public EvolveItem EvolveItem { get; set; }
-
+    // public EvolveKind EvolveKind { get; set; }
+    // public int EvolveLevel { get; set; }
+    // public List<EvolveItem>? EvolveItem { get; set; } = new();
     public List<EvolveForm>? EvolveToForms { get; set; } = new();
     public List<EvolveForm>? EvolveFromForms { get; set; } = new();
 

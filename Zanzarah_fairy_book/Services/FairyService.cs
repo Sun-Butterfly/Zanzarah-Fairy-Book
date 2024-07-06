@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Zanzarah_fairy_book.Models;
 
 namespace Zanzarah_fairy_book.Services;
@@ -14,10 +15,13 @@ public class FairyService
     public Fairy? GetById(int id)
     {
         var fairy = _db.Fairies
+            .Include(x => x.EvolveToForms)
+            .Include(x => x.EvolveFromForms)
             .FirstOrDefault(x => x.Id == id);
 
         return fairy;
     }
+
 
     public Fairy? GetByName(string name)
     {
@@ -39,11 +43,20 @@ public class FairyService
         _db.SaveChanges();
     }
 
-    public void UpdateEvolve(int fairyFromId, int fairyToId)
+    public void UpdateEvolve(
+        int fairyFromId,
+        EvolveKind evolveKind,
+        int evolveLevel,
+        List<EvolveItem> evolveItem,
+        int fairyToId
+    )
     {
         _db.EvolveForms.Add(new EvolveForm()
         {
             FromId = fairyFromId,
+            EvolveKind = evolveKind,
+            EvolveLevel = evolveLevel,
+            EvolveItem = evolveItem,
             ToId = fairyToId
         });
         _db.SaveChanges();
@@ -80,34 +93,35 @@ public class FairyService
         return true;
     }
 
-    public bool CanEvolve(Fairy fairy)
-    {
-        if (fairy.EvolveKind == EvolveKind.None)
-        {
-            return false;
-        }
+    // public bool CanEvolve(EvolveForm fairyFrom)
+    // {
+    //     if (fairyFrom.EvolveKind == EvolveKind.None)
+    //     {
+    //         return false;
+    //     }
+    //
+    //     return true;
+    // }
 
-        return true;
-    }
-    public bool CanEvolveByLevel(Fairy fairy)
-    {
-        if (CanEvolve(fairy) && fairy.EvolveKind == EvolveKind.EvolveFromItem)
-        {
-            return false;
-        }
+    // public bool CanEvolveByLevel(EvolveForm fairyFrom)
+    // {
+    //     if (CanEvolve(fairyFrom) && fairyFrom.EvolveKind == EvolveKind.EvolveFromItem)
+    //     {
+    //         return false;
+    //     }
+    //
+    //     return true;
+    // }
 
-        return true;
-    }
-
-    public bool CanEvolveByItem(Fairy fairy)
-    {
-        if (CanEvolve(fairy) && fairy.EvolveKind == EvolveKind.EvolveFromLevel)
-        {
-            return false;
-        }
-
-        return true;
-    }
+    // public bool CanEvolveByItem(EvolveForm fairyFrom)
+    // {
+    //     if (CanEvolve(fairyFrom) && fairyFrom.EvolveKind == EvolveKind.EvolveFromLevel)
+    //     {
+    //         return false;
+    //     }
+    //
+    //     return true;
+    // }
 
 
     public bool IsCorrectEvolve_ByLevel_Element(Fairy fairy1, Fairy fairy2)
@@ -116,14 +130,7 @@ public class FairyService
         {
             return false;
         }
+
         return true;
     }
-    // public bool IsCorrectEvolve_ByItem_Element(Fairy fairy1, Fairy fairy2)
-    // {
-    //     if (fairy1.Element != fairy2.Element)
-    //     {
-    //         return false;
-    //     }
-    //     return true;
-    // } //TODO:
 }

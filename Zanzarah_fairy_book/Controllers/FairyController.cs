@@ -25,7 +25,7 @@ public class FairyController : Controller
         var fairy = _service.GetById(id);
         return Ok(fairy);
     }
-    
+
     [HttpGet]
     public IActionResult GetByName(string name)
     {
@@ -45,24 +45,66 @@ public class FairyController : Controller
         {
             return BadRequest("Данная фея уже существует");
         }
+
         _service.Add(fairy);
         return Ok();
     }
 
     [HttpPost]
-    public IActionResult UpdateEvolveForm(int evolveFromFormId, int evolveToFormId)
+    public IActionResult UpdateEvolveForm(
+        int evolveFromFormId,
+        EvolveKind evolveKind,
+        int evolveLevel,
+        List<EvolveItem> evolveItem,
+        int evolveToFormId
+    )
     {
-        var fairyFrom = _service.GetById(evolveFromFormId);
-        var fairyTo = _service.GetById(evolveToFormId);
-        if (!_service.CanEvolve(fairyFrom))
+        if (evolveKind == EvolveKind.None)
         {
             return BadRequest("Фея не может эволюционировать!");
         }
-        if (_service.CanEvolveByLevel(fairyFrom) && !_service.IsCorrectEvolve_ByLevel_Element(fairyFrom, fairyTo))
+
+        var fairyFrom = _service.GetById(evolveFromFormId);
+        var fairyTo = _service.GetById(evolveToFormId);
+        if (evolveKind == EvolveKind.EvolveFromLevel &&
+            !_service.IsCorrectEvolve_ByLevel_Element(fairyFrom, fairyTo))
         {
             return BadRequest("Фея не может эволюционировать в другую стихию");
         }
-        _service.UpdateEvolve(evolveFromFormId,evolveToFormId);
+
+        if (evolveKind == EvolveKind.EvolveFromItem
+            && evolveItem.Contains(EvolveItem.EvolutionaryMagicOfNature)
+            && fairyTo.Element != Element.Nature
+           )
+        {
+            return BadRequest("Фея может эволюционировать только в фею природы");
+        }
+
+        if (evolveKind == EvolveKind.EvolveFromItem
+            && evolveItem.Contains(EvolveItem.EvolutionaryMagicOfAir)
+            && fairyTo.Element != Element.Air
+           )
+        {
+            return BadRequest("Фея может эволюционировать только в фею воздуха");
+        }
+
+        if (evolveKind == EvolveKind.EvolveFromItem
+            && evolveItem.Contains(EvolveItem.EvolutionaryMagicOfFire)
+            && fairyTo.Element != Element.Fire
+           )
+        {
+            return BadRequest("Фея может эволюционировать только в фею огня");
+        }
+
+        if (evolveKind == EvolveKind.EvolveFromItem
+            && evolveItem.Contains(EvolveItem.ToolsOfTheDwarves)
+            && fairyTo.Element != Element.Metal
+           )
+        {
+            return BadRequest("Фея может эволюционировать только в фею металла");
+        }
+
+        _service.UpdateEvolve(evolveFromFormId, evolveKind, evolveLevel, evolveItem, evolveToFormId);
         return Ok();
     }
 
@@ -73,7 +115,7 @@ public class FairyController : Controller
         return Ok();
     }
 
-    
+
     [HttpDelete]
     public IActionResult DeleteFairy(int id)
     {
